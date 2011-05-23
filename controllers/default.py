@@ -1,0 +1,91 @@
+days = ['T','W','Th','F']
+days_pe = ['M','T','W','Th','F','S']
+times = ['07:00am','08:30am','10:00am','11:30am','01:00pm','02:30pm','04:00pm','05:30pm']
+times_pe = ['07:00am','08:00am','09:00am','10:00am','11:00am','12:00am','01:00pm','02:00pm','03:00pm','04:00pm']
+
+def search(request, t, d):
+        my_subjects = []
+        crs = local_import('crs')
+    
+        subjects = [x.strip() for x in request.vars.subjects.split(',')]
+        keys = request.vars.keys()
+        
+        #get all subjects
+        for subj in subjects:
+            my_subjects = my_subjects + list(crs.search(subj))
+        
+        #filter subjects by days        
+        temp = []
+        select_days = set(d).intersection(keys)
+        select_times = set(t).intersection(keys)
+                                        
+        for subject in my_subjects:
+            skip = 0
+            if len(select_days.intersection(subject.schedule.keys())) != len(subject.schedule.keys()): continue
+            for day in subject.schedule.keys():
+                if skip: break     
+                for tm in select_times:
+                    if tm == str(subject.schedule[day][0][0]):
+                        temp.append(subject)
+                        skip = 1
+                        break
+                    
+        my_subjects = temp        
+
+        #remove 0 slots
+        if 'noslots' in keys:
+            my_subjects = filter((lambda subject: subject.stats[0] > 0), my_subjects)
+
+        if my_subjects == []:
+            my_subjects = 1
+            response.flash = 'Shucks, either there are no more slots or something went wrong. Sorry.'
+
+        else:response.flash = 'Here\'s the data.'
+        return my_subjects
+
+def index():
+
+    form1=FORM(TABLE(TR(TD("Subjects:",INPUT(_type="text",_name="subjects",requires=IS_NOT_EMPTY(),_class='day'),_colspan=5)),
+                    TR(TH('Days')),
+                    TR(TD(INPUT(_type="checkbox",_name="T",_class='day', value=True),' Tuesday'),
+                        TD(INPUT(_type="checkbox",_name="W",_class='day', value=True),' Wednesday'),
+                        TD(INPUT(_type="checkbox",_name="Th",_class='day', value=True),' Thursday'),
+                        TD(INPUT(_type="checkbox",_name="F",_class='day', value=True),' Friday'),
+                    ),
+                    TR(TH('Time')),
+                    TR(TD(INPUT(_type="checkbox",_name="07:00am",_class='time', value=True),' 7:00 - 8:30'), TD(INPUT(_type="checkbox",_name="08:30am",_class='time', value=True),' 8:30 - 10:00')),
+                    TR(TD(INPUT(_type="checkbox",_name="10:00am",_class='time', value=True),' 10:00 - 11:30'), TD(INPUT(_type="checkbox",_name="11:30am",_class='time', value=True),' 11:30 - 1:00')),
+                    TR(TD(INPUT(_type="checkbox",_name="01:00pm",_class='time', value=True),' 1:00 - 2:30'), TD(INPUT(_type="checkbox",_name="02:30pm",_class='time', value=True),' 2:30 - 4:00')),
+                    TR(TD(INPUT(_type="checkbox",_name="04:00pm",_class='time', value=True),' 4:00 - 5:30'), TD(INPUT(_type="checkbox",_name="05:30pm",_class='time', value=True), ' 5:30 - 7:00')),
+                    TR(TD(LABEL('Don\'t include subjects with no slots: '),INPUT(_type="checkbox",_name="noslots", value=True), _colspan=5)),                                                                                                                                                 
+                    TR("",INPUT(_type="submit",_value="Process GEs", _class='day')), _class='my_form'))
+
+    form2=FORM(TABLE(TR(TD("Subjects:",INPUT(_type="text",_name="subjects",requires=IS_NOT_EMPTY(),_class='day1'),_colspan=5)),
+                    TR(TH('Days')),
+                    TR(
+                        TD(INPUT(_type="checkbox",_name="M",_class='day1', value=True),' Monday'),
+                        TD(INPUT(_type="checkbox",_name="T",_class='day1', value=True),' Tuesday'),
+                        TD(INPUT(_type="checkbox",_name="W",_class='day1', value=True),' Wednesday'),
+                        TD(INPUT(_type="checkbox",_name="Th",_class='day1', value=True),' Thursday'),
+                        TD(INPUT(_type="checkbox",_name="F",_class='day1', value=True),' Friday'),
+                        TD(INPUT(_type="checkbox",_name="S",_class='day1', value=True),' Saturday'),
+                    ),
+                    TR(TH('Time')),
+                    TR(TD(INPUT(_type="checkbox",_name="07:00am",_class='time1', value=True),' 7:00 - 8:00'), TD(INPUT(_type="checkbox",_name="08:00am",_class='time1', value=True),' 8:00 - 9:00')),
+                    TR(TD(INPUT(_type="checkbox",_name="09:00am",_class='time1', value=True),' 9:00 - 10:00'), TD(INPUT(_type="checkbox",_name="10:00am",_class='time1', value=True),' 10:00 - 11:00')),
+                    TR(TD(INPUT(_type="checkbox",_name="11:00am",_class='time1', value=True),' 11:00 - 12:00'), TD(INPUT(_type="checkbox",_name="12:00am",_class='time1', value=True),' 12:00 - 1:00')),
+                    TR(TD(INPUT(_type="checkbox",_name="01:00pm",_class='time1', value=True),' 1:00 - 2:00'), TD(INPUT(_type="checkbox",_name="02:00pm",_class='time1', value=True),' 2:00 - 3:00')),
+                    TR(TD(INPUT(_type="checkbox",_name="03:00pm",_class='time1', value=True),' 3:00 - 4:00'),                                                              TD(INPUT(_type="checkbox",_name="04:00pm",_class='time1', value=True),' 4:00 - 5:00')),  
+                    TR(TD(LABEL('Don\'t include subjects with no slots: '),INPUT(_type="checkbox",_name="noslots", value=True), _colspan=5)),                                                                                                                                                                                                                                                                                                              
+                    TR("",INPUT(_type="submit",_value="Process PEs",_class='day1')), _class='my_form'))
+
+    my_subjects = []
+    
+    if form1.accepts(request.vars, session, formname='form1'):
+        my_subjects = search(request,times, days)
+        
+    if form2.accepts(request.vars, session, formname='form2'):
+        my_subjects = search(request,times_pe, days_pe)
+
+    
+    return dict(form1=form1, form2=form2, my_subjects=my_subjects)

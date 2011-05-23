@@ -1,0 +1,453 @@
+{{extend 'layout.html'}}
+<script src="{{=URL('static','cluetip/jquery.cluetip.js')}}"></script>
+<link rel="stylesheet" href={{=URL('static','cluetip/jquery.cluetip.css')}} /> 
+<style> 
+input[type="checkbox"] {
+vertical-align: text-bottom;
+}
+table.subjects {text-align:center;border: 1px solid black;}
+table.subjects tr:nth-child(even) {background: #DDD;border: 1px solid black;}
+table.subjects tr:nth-child(odd) {background: #FFF;border: 1px solid black;}
+table.subjects td,table.subjects th{border: 1px solid black;vertical-align:middle}
+table.ges, table.ges tr{text-align:center;width:100%;}
+table.ges td{text-align:center;}
+table.my_form,table.my_form td,table.my_form tr {text-align:left;width:auto;} 
+table, tr{text-align:center;width:100%;}
+
+</style> 
+<script>
+
+$(function(){
+
+    $('td.ge').cluetip({
+        splitTitle: '|',
+        width: 350,
+        cursor: 'pointer',
+        arrows: 'true',
+        cluetipClass: 'jtip rounded',
+        fx: {
+            open:       'show', // can be 'show' or 'slideDown' or 'fadeIn'
+            openSpeed:  ''        
+        },
+    })
+    
+    $('.day[type=submit]').click(function(){
+    
+        text = $('.day[type=text]').val().toLowerCase()
+        if(text.indexOf('pe ') != -1 && text != ''){
+            alert("Are you looking for a PE? Click the 'Click me to search for PEs.' button and fill up that form instead.")        
+            return false
+        }
+        if(!$('.day:checked').length) {
+            alert('I think you need to set the day you want.')
+            return false
+        }
+        if(!$('.time:checked').length) {
+             alert('Wait, which timeslots will I use?')
+             return false
+        }
+    })
+
+    $('.day1[type=submit]').click(function(){
+    
+        text = $('.day1[type=text]').val().toLowerCase()
+        
+        if(text.indexOf('pe ') == -1 && text != ''){
+            alert("Are you looking for a GE? Fill up the form abover instead.")        
+            return false
+        }
+
+        if(!$('.day1:checked').length) {
+            alert('I think you need to set the day you want.')
+            return false
+        }
+        if(!$('.time1:checked').length) {
+             alert('Wait, which timeslots will I use?')
+             return false
+        }
+    })
+
+
+    $('.day[name=T]').click(function(){        
+        if($(this).is(':checked')) $('.day[name=Th]').attr('checked', true)
+        else $('.day[name=Th]').attr('checked', false);
+    })
+    $('.day[name=Th]').click(function(){        
+        if(this.checked) $('.day[name=T]').attr('checked',true)
+        else $('.day[name=T]').attr('checked',false)
+    })
+    $('.day[name=W]').click(function(){        
+        if(this.checked) $('.day[name=F]').attr('checked',true)
+        else $('.day[name=F]').attr('checked',false)
+    })
+    $('.day[name=F]').click(function(){        
+        if(this.checked) $('.day[name=W]').attr('checked',true)
+        else $('.day[name=W]').attr('checked',false)
+    })
+})
+    
+</script>
+<h3>Another GE + PE Finder Alpha</h3> 
+<h5>Preenlistment for 1st Sem 2011-2012</h5>
+</br>
+<h4>Instructions</h4>
+<ol>
+<li>Enter the subjects you want to search. Separate them by commas for multiple subjects (eg 'Eng 1,Eng 30' or 'Eng 1, Eng 30').<br/>
+If you are looking for PEs instead click on the 'Click me to search for PEs.' button and fill up that form instead.<br/>
+Also separate them by commas for multiple subjects (eg 'PE 2,PE 1' or 'PE 3, PE 1').<br/></li>
+
+<li>Select your preferred days.</li>
+<li>Select your preferred timeslots.</li>
+<li>Click the respective "Process" button.</li>
+<li>Stare at the middle of the screen to load.</li>
+</ol>
+<br/>
+{{=form1}}
+<br/>
+<button onclick="jQuery('#div-pes').slideToggle()">Click me to search for PEs.</button> 
+<div id='div-pes' class='hidden'>
+{{=form2}}
+</div>
+<br/>
+<br/>
+<button onclick="jQuery('#div-ges').slideToggle()">Click me for the GEs.</button> 
+<div id='div-ges' class='hidden'>
+
+<table width='100%' class='ges'>
+       <tbody><tr>
+          <td>
+             </td></tr><tr>
+                <th>Arts and Humanities</th>
+                <th>Social Sciences and Philosophy</th>
+                <th>Math, Science and Technology</th>
+             </tr><tr>     
+       </tr>
+       <tr>
+          <td>
+             </td></tr><tr>
+                <td>
+                   <table> 
+                      <tbody><tr>
+                         <th>Subject1</th>
+                      </tr>
+                         <tr><td class="subjects ge" title="Comm 1: Communication Skills|The development of advanced communicative competence in English, with emphasis on effective
+reading, writing, &amp; listening skills." style="">Comm 1 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Comm 2: Communication Skills|The development of more advanced language skills
+in critical thinking &amp; effective reading &amp; writing." style="">Comm 2 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Hum 1: Literature, Society &amp; the Individual|Literary discourses as an expression of the 
+individual experience &amp; social values." style="">Hum 1 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Hum 2: Art, Man, &amp; Society|A study of the visual arts &amp; music as products of the 
+creative imagination in dynamic interaction with 
+society." style="">Hum 2 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Araling Kapampangan 10: Mekeni Abe: Pangkalahatang Sarbey ng Kulturang Kapampangan|Isang pangkalahatang pagtingin sa kultura ng rehiyon
+ng Pampanga kaugnay ang kasaysayan, panitikan,
+sining at sosyolohiya na nakapaloob dito.">Araling Kapampangan 10 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Aral Pil 12: Suroy-suroy sa Wika, Panitikan at Kultura  sa mga Isla ng Luzon, Visayas at Mindanao|Mga panimulang pag-aaral sa mga wika, panitikan 
+at kultura sa Pilipinas at ang kaugnayan at ambag 
+nito sa kalinangang pambansa sa kapuluan.">Aral Pil 12 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Art Stud 1: Art &amp; Society|Critical exploration of the arts in dynamic interaction with society.">Art Stud 1 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Art Stud 2: Art Around Us: Exploring Everyday Life|">Art Stud 2 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="BC 10: Radio &amp; Television: On-Air/Off-Air|Understanding the dynamics of broadcasting.">BC 10 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Comm 3: Practical Speech Fundamentals|Speaking &amp; listening skills &amp; their applications in various communication situations.
+">Comm 3 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="CW 10: Creative Writing for Beginners|A workshop exploring the potentials of creative writing as expression, as discipline &amp; as a way of thinking about the society in which we live.
+">CW 10 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Eng 1: Basic College English|Basic grammar, usage &amp; composition skills in English.">Eng 1 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Eng 10: College English|The writing &amp; critical reading of forms of academic 
+discourse essential to university work.">Eng 10 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Eng 11: Literature &amp; Society|The study of various literary genres as a dynamic 
+interaction between the individual &amp; social &amp; cultural forces. 
+">Eng 11 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="L Arch 1: Designing Eden: Introduction to Philippine Landscape Architecture  |Walking-through Philippine landscape architecture through sciences and arts.">L Arch 1 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Eng 12: World Literatures|The study of representative/landmark texts from the 
+literatures of the world.">Eng 12 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Eng 30: English for the Professions|Principles &amp; uses of writing in English in the various disciplines/professions.
+
+">Eng 30 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="EL 50: European Cultures &amp; Civilizations|Europe's contributions to world cultures, civilizations and languages.
+">EL 50 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="FA 28: Arts in the Philippines|Art &amp; art making the Filipino way.">FA 28 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="FA 30: Art Pleasures|The fine art of enjoying art.">FA 30 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Fil 25: Mga Ideya at Estilo|Mapanuring pag-aaral ng mga ideya at estilo sa mga piling sanaysay sa agham at sining mula sa Pilipinas at iba pang bansa.
+">Fil 25 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Fil 40: Wika, Kultura at Lipunan|Ang relasyon ng Filipino sa kultura at lipunang Pilipino.">Fil 40 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Film 10: Sining Sine|Film as art &amp; social practice.">Film 10 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Film 12: Sine Pinoy|Philippine cinema as art form &amp; cultural product.">Film 12 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Humad 1: Panitikan, Tao at Lipunang Filipino|Ang pag-aaral ng iba't ibang anyong pampanitikan bilang malikhaing pahayag ng mga indibidwal na karanasan at mga pagpapahalaga at mithiin ng lipunang Filipino.
+">Humad 1 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="J 18: News in the New Century|Reading &amp; understanding the news towards developing a critical public voice.">J 18 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Kom 1: Kasanayan sa Komunikasyon|Paglinang sa kakayahang magpahayag sa wikang 
+Filipino na nakatuon sa mabisa at mapanuring pagbasa, pakikinig at pagsulat. 
+">Kom 1 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Kom 2: Kasanayan sa Komunikasyon|Paglinang sa kasanayan sa paggamit ng wikang Filipino sa higit na mapanuring pag-iisip at masinop na
+pananaliksik.">Kom 2 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="MPs 10: Ang Hiwaga at Hikayat ng Panulat sa Filipino  |Malikhaing pagbasa at masining na pagsulat ng mga natatanging anyong pampanitikan, kasama ang mga makabagong anyong teknolohikal.
+">MPs 10 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="MuD 1: Reading Dance|An approach to understanding dance as art &amp; as
+cultural phenomenon.">MuD 1 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="MuL 13: World Music Cultures|A study of music from representative regions of the world from the perspectives of music as a sonic object, as a social act &amp; as thought &amp; cognition.
+">MuL 13 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="MuL 9: Musics of the Philippines|An overview of indigenous musical traditions &amp; musical idioms associated with cultures of various peoples of the Philippines.
+">MuL 9 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Pan Pil 12: Text Mo/Text Ko: Panimulang Pag-aaral ng Panitikang Pilipino|Mga panimulang pag-aaral sa panitikan ng Pilipinas, mula sa tradisyunal na anyo hanggang sa mga teksto mula sa kulturang popular.
+">Pan Pil 12 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Pan Pil 17: Panitikan at Kulturang Popular|Ang relasyon ng panitikan at popular na kultura sa kasalukuyan.">Pan Pil 17 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Pan Pil 19: Sexwalidad, Kasarian at Panitikan|Pag-aaral ng interaksiyon ng panitikan at mga usapin sa sexwalidad at kasarian.
+">Pan Pil 19 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Pan Pil 40: Panitikan at Lipunang Pilipino mula 1946 Hanggang sa Kasalukuyan|Ang mga nangingibabaw na tema, anyo at kalakaran ng panitikan ng Pilipinas pagkaraan ng Ikalawang Digmaang Pandaigdig.
+">Pan Pil 40 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Pan Pil 50: Panitikang Makabayan|Ang mga namumukod na katangian ng panitikang makabayan at ang mga impluwensiya dito.">Pan Pil 50 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="SEA 30: Asian Emporiums: Networks of Culture &amp; Trade in Southeast Asia|An introduction to the world of monsoon Asia as formed by interaction among its peoples throughout the centuries.">SEA 30 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Theatre 10: Onstage, Offstage|A window to the world of the theatre, its humanizing role in society &amp; its relationship to the other arts.
+">Theatre 10 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Theatre 11: Dula at Palabas|An introductory survey to Philippine Theatre from rituals to contemporary forms.">Theatre 11 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Theatre 12: Acting Workshop|An introduction to the art &amp; skill of acting for the theatre.">Theatre 12 </td></tr>                               
+                   </tbody></table>
+                   * you need at least 15 units
+                </td>
+                <td>   
+                   <table>
+                      <tbody><tr>
+                         <th>Subject</th>
+                      </tr>
+                         <tr><td class="subjects ge" title="L Arch 1: Designing Eden: Introduction to Philippine Landscape Architecture  |Walking-through Philippine landscape architecture through sciences and arts.">L Arch 1 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Anthro 10: Bodies, Senses &amp; Humanity|Interaction of biology &amp; culture in the shaping of humanity.">Anthro 10 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Archaeo 2: Archaeological Heritage: The Past is not a Foreign Land|A survey of archaelogical research &amp; its role in the development of knowledge about the human collective past, the past of specific cultures, especially those of Southeast Asia, &amp; the nature &amp; role of heritage in the contemporary world.
+">Archaeo 2 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Arkiyoloji 1: Ang Pilipinas: Arkiyoloji at Kasaysayan|Tatalakayin ang kasaysayan ng Pilipinas, nakasentro sa kaalaman mula sa arkiyoloji. Ipaaalam din ang malawak na ugnayan ng sinaunang kasaysayan ng rehiyon sa kasaysayan ng Pilipinas.">Arkiyoloji 1 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Econ 11: Markets &amp; the State|Essential economic concepts &amp; their use in analyzing real-world issues.">Econ 11 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Econ 31: A Journey Through Time: Economic Ideas &amp; Civilization|A survey of the influence of economic ideas on historical events of the last century &amp; a half.
+">Econ 31 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Geog 1: Places &amp; Landscapes in a Changing World|Overview of the diverstiy of interconnections of peoples &amp; places in a globalizing world as mediated by cultures, politics &amp; historical developments.">Geog 1 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Kas 1: Kasaysayan ng Pilipinas|Ang pagsulong na pulitikal, pang-ekonomiya, panlipunan at pagkalinangan ng Pilipinas.">Kas 1 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Kas 2: Ang Asya at ang Daigdig|Ang pamanang pangkalinangan ng Asya sa pagkakaugnay at ang kaugnayan nito sa kabihasnang pandaigdig.
+">Kas 2 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Lingg 1: Ikaw at Wika Mo|Mga pangunahing konsepto tungo sa pag-unawa,
+paggamit at pagpapahalaga sa wika bilang produkto ng talino ng tao sa kanyang pang-araw-araw na pakikipag-ugnayan, at higit sa lahat, sa konteksto ng sitwasyong pangwika sa Pilipinas.
+">Lingg 1 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Philo 1: Philosophical Analysis|Application of basic concepts, skills &amp; principles drawn from the Philosophy of Language, Symbolic Logic, Epistemology, Philosophy of Science &amp; Ethics.">Philo 1 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Philo 10: Approaches to Philosophy|Overview of major philosophical traditions.">Philo 10 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Philo 11: Logic|Techniques of formal deduction within the scope of sentential &amp; predicate logic.">Philo 11 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="SEA 30: Asian Emporiums: Networks of Culture &amp; Trade in Southeast Asia|An introduction to the world of monsoon Asia as formed by interaction among its peoples throughout the centuries.">SEA 30 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Soc Sci 1: Foundations of Behavioral Sciences|A survey of basic concepts, principles, theories &amp;
+methods of the behavioral sciences (Sociology,
+Psychology, Anthropology, Political Science, Economics, including Linguistics, Demography &amp; Geography) &amp; the dynamics of social change.
+">Soc Sci 1 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Soc Sci 2: Social, Economic &amp; Political Thought|A survey of social, economic, &amp; political thought from the classical to contemporary times.">Soc Sci 2 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Soc Sci 3: Exploring Gender &amp; Sexuality|A cross-cultural survey of gender &amp; sexuality, applying perspectives from the different social sciences.">Soc Sci 3 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Socio 10: Being Filipino: A Sociological Exploration|A sociological examination of the persistent issues of nationhood, selfhood &amp; citizenship in Philippine society.">Socio 10 </td></tr>    
+                                                      
+                   </tbody></table>
+                   * you need at least 15 units                            
+                </td>
+                <td>                        
+                   <table>
+                      <tbody><tr>
+                         <th>Subject</th>
+                      </tr>    
+                         <tr><td class="subjects ge" title="L Arch 1: Designing Eden: Introduction to Philippine Landscape Architecture  |Walking-through Philippine landscape architecture through sciences and arts.">L Arch 1 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="BIO 1: Contemporary Topics in Biology|Recent developments in biology pertinent to concerns about the nature of life, health &amp; related social issues." style="">BIO 1 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Chem 1: Chemistry: Science that Matters|Basic chemistry concepts relevant to everyday life." style="">Chem 1 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="EEE 10: Everyday EEE: Kuryente, Radyo atbp.|Electrical &amp; electronics engineering in everyday life. ">EEE 10 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Env Sci 1: Environment &amp; Society|Introduction to principles and concepts in the study of the natural environment within a societal framework.
+">Env Sci 1 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="ES 10: Forces at Work|Principles of engineering mechanics &amp; their relevance to everyday life.
+">ES 10 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="GE 1: Earth Trek|A guided exploration into the tools &amp; techniques of
+earth observation &amp; measurement.">GE 1 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Geol 1: Our Dynamic Earth|The study of how the earth works, its place in the
+universe and relationship between people and the physical environment.
+">Geol 1 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Math 1: General Mathematics|The development of mathematical literacy &amp; appreciation through a synoptic view of the different branches of mathematics with historical notes &amp; applications.">Math 1 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Math 2: Practical Mathematics|Basic mathematics skills &amp; applications in everyday life.">Math 2 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="MBB 1: Biotechnology &amp; You|Historical events, processes, products, issues and concerns in modern biotechnology.">MBB 1 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="MS 1: Oceans &amp; Us|An appreciation course on the functional balance
+between the health of the oceans &amp; the survival &amp;
+improvement of our way of life.">MS 1 </td></tr>    
+                      
+                         <tr><td class="subjects ge" title="Nat Sci 1: Foundations of Natural Science 1|Fundamental concepts, principles &amp; theories of physics and chemistry.
+">Nat Sci 1 </td></tr>    
+                         <tr><td class="subjects ge" title="Nat Sci 2: Foundations of Natural Science 2|Fundamental concepts, principles, &amp; theories of earth &amp; life sciences.
+">Nat Sci 2 </td></tr>                
+                         <tr><td class="subjects ge" title="Physics 10: Physics &amp; Astronomy for Pedestrians|A &quot;walk-through&quot; course for people who want to enjoy physics &amp; astronomy.
+">Physics 10 </td></tr>                       
+                         <tr><td class="subjects ge" title="STS: Science, Technology &amp; Society|The analysis from historical &amp; futuristic perspectives of the nature &amp; role of science &amp; technology in society &amp; of the socio-cultural &amp; politico-economic factors affecting their development with emphasis on Philippine setting.">STS </td></tr>                                                                                          
+                   </tbody></table>
+                   * if EEE, you need at least 9 units
+                </td>
+             </tr>                                        
+       <tr><td colspan="3"><hr></td></tr>            
+          <tr>
+             <td>
+                </td></tr><tr>
+                   <th>Philippine Studies</th>
+                   <th>English Communication</th>
+                </tr>
+          <tr>
+             <td>
+                </td></tr><tr>
+                   <td>
+                      <table>
+                         <tbody><tr>
+                            <th>Subject</th>
+                         </tr>
+                            <tr><td class="subjects">Aral Pil 12</td></tr>    
+                            <tr><td class="subjects">L Arch 1</td></tr>    
+                            <tr><td class="subjects">FA 28</td></tr>    
+                            <tr><td class="subjects">Fil 40</td></tr>    
+                            <tr><td class="subjects">Film 12</td></tr>    
+                            <tr><td class="subjects">Humad 1</td></tr>    
+                            <tr><td class="subjects">MPs 10</td></tr>    
+                            <tr><td class="subjects">MuL 9</td></tr>    
+                            <tr><td class="subjects">Pan Pil 12</td></tr>                             
+                            <tr><td class="subjects">Pan Pil 17</td></tr>                             
+                            <tr><td class="subjects">Pan Pil 19</td></tr>                             
+                            <tr><td class="subjects">Pan Pil 40</td></tr>    
+                            <tr><td class="subjects">Pan Pil 50</td></tr>    
+                            <tr><td class="subjects">Theatre 11</td></tr>    
+                            <tr><td class="subjects">Arkiyoloji 1</td></tr>    
+                            <tr><td class="subjects">Kas 1</td></tr>    
+                            <tr><td class="subjects">Socio 10</td></tr>    
+                      </tbody></table>
+                      * you need at least 6 units                            
+                   </td>
+                   <td>
+                      <table>
+                         <tbody><tr>
+                            <th>Subject</th>
+                         </tr>
+                            <tr><td class="subjects">Eng 1</td></tr>    
+                            <tr><td class="subjects">Eng 10</td></tr>    
+                            <tr><td class="subjects">Eng 11</td></tr>    
+                            <tr><td class="subjects">Eng 12</td></tr>    
+                            <tr><td class="subjects">Eng 30</td></tr>    
+                            <tr><td class="subjects">CW 10</td></tr>    
+                            <tr><td class="subjects">Comm 3</td></tr>    
+                      </tbody></table>
+                      * you need at least 9 units
+                   </td>
+                </tr>                                        
+       </tbody></table>
+</div>
+<br/>
+<br/>
+<button onclick="window.open('https://crs.upd.edu.ph/course_catalog/index/pe%202');">Click me for the PEs.</button> 
+<br/>
+<br/>
+{{if my_subjects:}}
+{{if my_subjects == 1:}}
+{{=I('Shucks, either there are no more slots or something went wrong. Sorry.')}}
+{{else:}}
+<table width='100%' class='subjects'>
+{{=TR(TH('Class code'), TH('Class'),TH('Available Slots/Total Slots/Demand'),TH('Schedule'),)}}
+{{for subject in my_subjects:}}
+<tr>
+{{=TD(subject.code)}}
+{{=TD(subject.name + ' ' + subject.section)}}
+{{=TD(subject.stats[0],' / ',subject.stats[1],' / ',subject.stats[2])}}
+{{#=TD(subject.schedule)}}
+<td>
+{{for key in subject.schedule.keys():}}
+{{=key}}
+{{=str(subject.schedule[key][0]).replace('<','').replace('>','')}}
+<br/>
+{{pass}}
+</td>
+</tr>
+{{pass}}
+</table>
+{{pass}}
+<br/>
+{{pass}}
+
+<br/>
+<h4>About:</h4>
+The site makes it possible to search multiple subjects especially GEs and now PEs, provide certain schedule restrictions and remove subjects without slots <b>on the fly</b>.<br/>
+This is still in Alpha so don't get your hopes up. Expect crashes and explosions to occur frequently.<br/>
+This should work <b>theoretically</b> with other GE-like subjects.<br/>
+Another GE Finder is inspired by Darwin Bautista's {{=A('CRS-o-matic', _href='http://crs-o-matic.appspot.com/')}} and Jermaine Luis Agnasin's {{=A('CRS tools/hacks', _href='http://jelo-agnasin.blogspot.com/2011/05/crs-toolshacks.html')}}.<br/>
+The core of the site uses Darwin Bautista's {{=A('crs.py', _href='http://code.google.com/p/crs-o-matic/source/browse/crs.py')}} to parse the CRS website.<br/>
+List of GE subjects can be found {{=A('here', _href='http://www.upd.edu.ph/~our/files/ListofRGEPCourses.pdf')}}.<br/>
+Loading time is proportional to the number of subjects you listed and number of classes in each subject. <br/>
+For comments, errors and feature requests, fill in the form found {{=A('here', _href='http://http://bbs.eee.upd.edu.ph/iskotool')}} in the Feedback section.<br/>
+For Iskotool, another GWA Calculator + EEE Online Advising + GE Lister v1.25 , click {{=A('here', _href='http://bbs.eee.upd.edu.ph/iskotool')}}.
+<br/>
+<br/>
+<h4>Disclaimer:</h4>
+This has not been tested and will not be tested in Internet Explorer.<br/>
+Since some PEs do not follow the twice-a-week schedule, some results will not be filtered by schedule correctly.<br/>
+All data presented by ge-finder are just parsed from the CRS website using Darwin Bautista's {{=A('CRS-o-matic', _href='http://crs-o-matic.appspot.com/')}} and are not modified in any way. Thus, I will not be responsible for any misleading or erroneous information produced by the software due to inconsistencies or errors in the CRS website. I will also not be responsible for any misleading or erroneous information caused by bugs in the software. <br/>
+Even this disclaimer is lifted from Darwin Bautista's {{=A('CRS-o-matic', _href='http://crs-o-matic.appspot.com/')}}.<br/>
+I am not part of the CRS team.<br/>
+<br/>
+<h4>Changelog:</h4>
+May 15: Added PE finder. <br/>
+May 15: Comm 3 issue fixed.

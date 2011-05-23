@@ -1,0 +1,272 @@
+# -*- coding: utf-8 -*-
+#
+# crs-o-matic - CRS Schedule Generator
+# Copyright (C) 2008-2011  Darwin M. Bautista
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+import math
+import time
+import urllib
+import urllib2
+
+from BeautifulSoup import BeautifulSoup, SoupStrainer
+# sets module is deprecated since Python 2.6
+try:
+    set
+except NameError:
+    from sets import Set as set
+# Python 2.5 compatibility
+try:
+    from itertools import product
+except ImportError:
+    # Equivalent itertools.product() implementation copied from
+    # http://docs.python.org/library/itertools.html#itertools.product
+    def product(*args, **kwds):
+        # product('ABCD', 'xy') --> Ax Ay Bx By Cx Cy Dx Dy
+        # product(range(2), repeat=3) --> 000 001 010 011 100 101 110 111
+        pools = map(tuple, args) * kwds.get('repeat', 1)
+        result = [[]]
+        for pool in pools:
+            result = [x+[y] for x in result for y in pool]
+        for prod in result:
+            yield tuple(prod)
+
+
+URI = 'https://crs.upd.edu.ph'
+
+
+def _strftime(fmt, t):
+    return time.strftime(fmt, (1900, 1, 1, t[0], t[1], 0, 0, 1, -1))
+
+
+def _merge_similar(classes):
+    i = 0
+    while i < len(classes) - 1:
+        j = i + 1
+        while j < len(classes):
+            if classes[i].schedule == classes[j].schedule:
+                # Add to similar classes
+                append = classes[i].similar.append
+                append(classes.pop(j))
+            else:
+                j += 1
+        i += 1
+
+
+class Time(tuple):
+
+    def __new__(cls, hour, minute):
+        return super(Time, cls).__new__(cls, (hour, minute))
+
+    def __repr__(self):
+        return _strftime("%I:%M%P", self)
+
+
+class Interval(tuple):
+
+    def __new__(cls, start, end):
+        return super(Interval, cls).__new__(cls, (start, end))
+
+    def __repr__(self):
+        return "<%s-%s>" % self
+
+
+class Class(object):
+
+    def __init__(self, code=None, name=None, section=None):
+        self.code = code
+        self.name = name
+        self.section = section
+        self.credit = None
+        self.schedule = None
+        self.stats = None
+        self.similar = []
+
+    def get_odds(self):
+        try:
+            prob = float(self.stats[0]) / self.stats[2]
+        except ZeroDivisionError:
+            prob = 1.0
+        # Normalize
+        if prob > 1.0:
+            prob = 1.0
+        probs = map(Class.get_odds, self.similar)
+        probs.append(prob)
+        # Get average, for now
+        return sum(probs) / len(probs)
+
+
+class ClassParser(object):
+
+    def __init__(self, course_num, filters=()):
+        self.course_num = course_num.lower()
+        if filters:
+            self.whitelist = [i.upper() for i in filters if not i.startswith('!')]
+            self.blacklist = [i.upper().lstrip('!') for i in filters if i.startswith('!')]
+        else:
+            self.whitelist = []
+            self.blacklist = []
+
+    def feed(self, data):
+        children = []
+        tbody = SoupStrainer('tbody')
+        soup = BeautifulSoup(data, parseOnlyThese=tbody)
+        for tr in soup.findAll('tr'):
+            try:
+                code, name, credit, schedule, stats, remarks = tr.findAll('td')
+            except ValueError:
+                continue
+            kls = Class(code=code.contents[0].strip())
+            # name, section
+            kls.name, kls.section = name.contents[0].rsplit(None, 1)
+            # Remove extra spaces, if any
+            kls.name = ' '.join(kls.name.split())
+       
+            # Filter classes based on the course number
+            if self.course_num[:3] == 'pe ' and kls.name[:3].lower() == 'pe ':
+            #    kls.name = kls.name[:4]
+                pass
+    
+            elif kls.name.lower() != self.course_num:
+                if self.course_num != 'comm 3':
+                    continue
+            # credit
+            kls.credit = float(credit.contents[0].strip())
+            # schedule
+            schedule = schedule.contents[0].strip()
+            kls.schedule = self._parse_sched(schedule)
+
+            # stats
+            try:
+                kls.stats = tuple([int(i.strip('/')) for i in stats.text.split() if i != '/'])
+            except ValueError:
+                # get rid of DISSOLVED classes
+                continue
+            children.append(kls)
+        return children
+
+    @staticmethod
+    def _parse_time(data):
+        start, end = map(str.strip, str(data).upper().split('-'))
+        # If both start and end are digits, they are probably room numbers.
+        if start.isdigit() and end.isdigit():
+            raise ValueError
+
+        if not end.endswith('M'):
+            end += 'M'
+
+        for fmt in ['%I%p', '%I:%M%p']:
+            try:
+                time_end = Time(*time.strptime(end, fmt)[3:5])
+            except ValueError:
+                continue
+            else:
+                break
+        # Get the int value of the hours.
+        start_hour = int(start.split(':')[0].rstrip('APM'))
+        end_hour = int(_strftime('%I', time_end))
+
+        if start.endswith('A') or start.endswith('P'):
+            # Append 'M'
+            start += 'M'
+        elif start_hour <= end_hour and end_hour != 12:
+            # Append the same am/pm to the start time
+            start += _strftime("%P", time_end)
+
+        for fmt in ['%I', '%I:%M', '%I%p', '%I:%M%p']:
+            try:
+                time_start = Time(*time.strptime(start, fmt)[3:5])
+            except ValueError:
+                continue
+            else:
+                break
+        return Interval(time_start, time_end)
+
+    @staticmethod
+    def _parse_days(data):
+        # Replace 'Th' by 'th' to avoid confusion with 'T'.
+        data = data.replace('Th', 'th')
+        all_days = ['M', 'T', 'W', 'th', 'F', 'S']
+        days = (day.title() for day in all_days if day in data)
+        return days
+
+    @staticmethod
+    def _parse_sched(data):
+        data = data.split()
+        sched = {}
+        for i, block in enumerate(data[1:]):
+            if '-' not in block:
+                continue
+            # Assume that this is a valid time
+            try:
+                time = ClassParser._parse_time(block)
+            except ValueError:
+                continue
+            # Assume that the previous block is valid days
+            for day in ClassParser._parse_days(data[i]):
+                sched.setdefault(day, []).append(time)
+        return sched
+
+    @staticmethod
+    def _merge_sched(dest, source):
+        for day in source:
+            dest.setdefault(day, []).extend(source[day])
+
+
+def get_current_term():
+    request = urllib2.Request(URI)
+    request.add_header('User-Agent', 'Python-urllib/CRS-o-matic')
+    page = urllib2.urlopen(request)
+    data = page.read()
+    page.close()
+    ul = SoupStrainer('ul')
+    soup = BeautifulSoup(data, parseOnlyThese=ul)
+    # Find all links from the last <ul>
+    links = soup.findAll('ul')[-1].findAll('a')
+    # Get only the correct links
+    links = filter(lambda a: a['href'].split('/')[-1].startswith('1'), links)
+    links.sort(key=lambda a: a['href'].split('/')[-1])
+    return links[-1]['href'].split('/')[-1]
+
+
+def get_term_name(term):
+    sem = {
+        '1': '1st Semester',
+        '2': '2nd Semester',
+        '3': 'Summer'
+    }
+    s = sem[term[5]]
+    start = int(term[1:5])
+    end = start + 1
+    name = '%s AY %d-%d' % (s, start, end)
+    return name
+
+
+def search(course_num, term=None, filters=(), distinct=False):
+    """Search using CRS"""
+    # Stupid code for PE classes
+    c = course_num.lower().split()
+    if term is None:
+        term = get_current_term()
+    url = '%s/schedule/%s/%s' % (URI, term, urllib.quote(course_num))
+    request = urllib2.Request(url)
+    request.add_header('User-Agent', 'Python-urllib/CRS-o-matic')
+    page = urllib2.urlopen(request)
+    data = page.read()
+    page.close()
+    parser = ClassParser(course_num, filters)
+    classes = parser.feed(data)
+    classes.sort(key=Class.get_odds, reverse=True)
+    return classes
