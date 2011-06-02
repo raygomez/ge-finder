@@ -18,6 +18,42 @@ table, tr{text-align:center;width:100%;}
 <script>
 
 $(function(){
+    $('#eng-add').click(function(){
+        text = 'Eng 1, Eng 10, Eng 11, Eng 12, Comm 3, CW 10'
+        $('#ge').val(text)
+        return false;
+    })
+
+    $('#mst-add').click(function(){
+        text = 'L Arch 1,BIO 1,Chem 1,EEE 10,Env Sci 1,ES 10,GE 1,Geol 1,Math 1,Math 2,MBB 1,MS 1,Nat Sci 1,Nat Sci 2,Physics 10,STS'
+        $('#ge').val(text)
+        return false;
+    })
+
+    $('#ssp-add').click(function(){
+        text = 'L Arch 1,Anthro 10,Archaeo 2,Arkiyoloji 1,Econ 11,Econ 31,Geog 1,Kas 1,Kas 2,Lingg 1,Philo 1,Philo 10,Philo 11,SEA 30,Soc Sci 1,Soc Sci 2,Soc Sci 3,Socio 10'
+        $('#ge').val(text)
+        return false;
+    })
+
+    $('#ah-add').click(function(){
+        text = 'Comm 1,Comm 2,Hum 1,Hum 2,Araling Kapampangan 10,Aral Pil 12,Art Stud 1,Art Stud 2,BC 10,Comm 3,CW 10,Eng 1,Eng 10,Eng 11,L Arch 1,Eng 12,Eng 30,EL 50,FA 28,FA 30,Fil 25,Fil 40,Film 10,Film 12,Humad 1,J 18,Kom 1,Kom 2,MPs 10,MuD 1,MuL 13,MuL 9,Pan Pil 12,,Pan Pil 17,Pan Pil 19,Pan Pil 40,Pan Pil 50,SEA 30,Theatre 10,Theatre 11,Theatre 12'
+        $('#ge').val(text)
+        return false;
+    })
+
+    $('#phil-add').click(function(){
+        text = 'Aral Pil 12,L Arch 1,FA 28,Fil 40,Film 12,Humad 1,MPs 10,MuL 9,Pan Pil 12,Pan Pil 17,Pan Pil 19,Pan Pil 40,Pan Pil 50,Theatre 11,Arkiyoloji 1,Kas 1,Socio 10'
+        $('#ge').val(text)
+        return false;
+    })
+
+    $('#pe-add').click(function(){
+        text = 'PE 1,PE 2,PE 3,PE 4'
+        $('#pe').val(text)
+        return false;
+    })
+
 
     $('td.ge').cluetip({
         splitTitle: '|',
@@ -87,20 +123,26 @@ $(function(){
 })
     
 </script>
-<h3>Another GE + PE Finder Alpha</h3> 
+<h3>Another GE + PE Finder Beta</h3> 
 <h5>Preenlistment for 1st Sem 2011-2012</h5>
 </br>
+<button onclick="jQuery('#div-instruct').slideToggle()">Click me for instructions.</button> <br/>
+<div id='div-instruct' class='hidden'>
 <h4>Instructions</h4>
 <ol>
 <li>Enter the subjects you want to search. Separate them by commas for multiple subjects (eg 'Eng 1,Eng 30' or 'Eng 1, Eng 30').<br/>
-If you are looking for PEs instead click on the 'Click me to search for PEs.' button and fill up that form instead.<br/>
-Also separate them by commas for multiple subjects (eg 'PE 2,PE 1' or 'PE 3, PE 1').<br/></li>
+If you are looking for PEs, click on the 'Click me to search for PEs.' button and fill up that form instead.<br/>
+Also separate them by commas for multiple subjects (eg 'PE 2,PE 1' or 'PE 3, PE 1').<br/>
+<b>New!</b> You can also click the corresponding buttons beside the search field to look for GEs in a particular domain.<br/>
+I assume that UP students are mature enough not to abuse this feature.
+</li>
 
 <li>Select your preferred days.</li>
 <li>Select your preferred timeslots.</li>
 <li>Click the respective "Process" button.</li>
 <li>Stare at the middle of the screen to load.</li>
 </ol>
+</div>
 <br/>
 {{=form1}}
 <br/>
@@ -431,7 +473,7 @@ improvement of our way of life.">MS 1 </td></tr>
 <br/>
 <h4>About:</h4>
 The site makes it possible to search multiple subjects especially GEs and now PEs, provide certain schedule restrictions and remove subjects without slots <b>on the fly</b>.<br/>
-This is still in Alpha so don't get your hopes up. Expect crashes and explosions to occur frequently.<br/>
+This is still in Beta so don't get your hopes up. Expect crashes and explosions to occur often.<br/>
 This should work <b>theoretically</b> with other GE-like subjects.<br/>
 Another GE Finder is inspired by Darwin Bautista's {{=A('CRS-o-matic', _href='http://crs-o-matic.appspot.com/')}} and Jermaine Luis Agnasin's {{=A('CRS tools/hacks', _href='http://jelo-agnasin.blogspot.com/2011/05/crs-toolshacks.html')}}.<br/>
 The core of the site uses Darwin Bautista's {{=A('crs.py', _href='http://code.google.com/p/crs-o-matic/source/browse/crs.py')}} to parse the CRS website.<br/>
@@ -449,5 +491,6 @@ Even this disclaimer is lifted from Darwin Bautista's {{=A('CRS-o-matic', _href=
 I am not part of the CRS team.<br/>
 <br/>
 <h4>Changelog:</h4>
+June 2: Added Domain Buttons. <br/>
 May 15: Added PE finder. <br/>
 May 15: Comm 3 issue fixed.

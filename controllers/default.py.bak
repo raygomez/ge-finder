@@ -21,7 +21,7 @@ def search(request, t, d):
                                         
         for subject in my_subjects:
             skip = 0
-            if len(select_days.intersection(subject.schedule.keys())) != len(subject.schedule.keys()): break
+            if len(select_days.intersection(subject.schedule.keys())) != len(subject.schedule.keys()): continue
             for day in subject.schedule.keys():
                 if skip: break     
                 for tm in select_times:
@@ -45,11 +45,16 @@ def search(request, t, d):
 
 def index():
 
-    form1=FORM(TABLE(TR(TD("Subjects:",INPUT(_type="text",_name="subjects",requires=IS_NOT_EMPTY(),_class='day'),_colspan=5)),
+    form1=FORM(TABLE(TR(TD("Subjects:",INPUT(_type="text",_name="subjects",requires=IS_NOT_EMPTY(),_class='day', _id='ge'),
+                        INPUT(_value='All AHs', _id='ah-add',_type='button'),SPAN('  '),
+                        INPUT(_value='All SSPs', _id='ssp-add',_type='button'),SPAN('  '),
+                        INPUT(_value='All MSTs', _id='mst-add',_type='button'),SPAN('  '),
+                        INPUT(_value='All Eng Comm', _id='eng-add',_type='button'),SPAN('  '),                                                     
+                        INPUT(_value='All Phil Stud', _id='phil-add',_type='button'),_colspan=5)),
                     TR(TH('Days')),
-                    TR(TD(INPUT(_type="checkbox",_name="T",_class='day', value=True),' Tuesday'),
-                        TD(INPUT(_type="checkbox",_name="W",_class='day', value=True),' Wednesday'),
-                        TD(INPUT(_type="checkbox",_name="Th",_class='day', value=True),' Thursday'),
+                    TR(TD(INPUT(_type="checkbox",_name="T",_class='day', value=True),' Tuesday', _style="width: 15%;"),
+                        TD(INPUT(_type="checkbox",_name="W",_class='day', value=True),' Wednesday', _style="width: 15%;"),
+                        TD(INPUT(_type="checkbox",_name="Th",_class='day', value=True),' Thursday', _style="width: 15%;"),
                         TD(INPUT(_type="checkbox",_name="F",_class='day', value=True),' Friday'),
                     ),
                     TR(TH('Time')),
@@ -57,10 +62,11 @@ def index():
                     TR(TD(INPUT(_type="checkbox",_name="10:00am",_class='time', value=True),' 10:00 - 11:30'), TD(INPUT(_type="checkbox",_name="11:30am",_class='time', value=True),' 11:30 - 1:00')),
                     TR(TD(INPUT(_type="checkbox",_name="01:00pm",_class='time', value=True),' 1:00 - 2:30'), TD(INPUT(_type="checkbox",_name="02:30pm",_class='time', value=True),' 2:30 - 4:00')),
                     TR(TD(INPUT(_type="checkbox",_name="04:00pm",_class='time', value=True),' 4:00 - 5:30'), TD(INPUT(_type="checkbox",_name="05:30pm",_class='time', value=True), ' 5:30 - 7:00')),
-                    TR(TD(LABEL('Don\'t include subjects with no slots: '),INPUT(_type="checkbox",_name="noslots", value=True), _colspan=5)),                                                                                                                                                 
+                    TR(TD(SPAN(LABEL('Don\'t include subjects with no slots: '),INPUT(_type="checkbox",_name="noslots", value=True)), _colspan=5)),                                                                                                                                                 
                     TR("",INPUT(_type="submit",_value="Process GEs", _class='day')), _class='my_form'))
 
-    form2=FORM(TABLE(TR(TD("Subjects:",INPUT(_type="text",_name="subjects",requires=IS_NOT_EMPTY(),_class='day1'),_colspan=5)),
+    form2=FORM(TABLE(TR(TD("Subjects:",INPUT(_type="text",_name="subjects",requires=IS_NOT_EMPTY(),_class='day1',_id='pe'),
+                    TAG.BUTTON('All PEs', _id='pe-add'),_colspan=5)),
                     TR(TH('Days')),
                     TR(
                         TD(INPUT(_type="checkbox",_name="M",_class='day1', value=True),' Monday'),
