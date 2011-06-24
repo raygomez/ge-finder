@@ -123,7 +123,6 @@ class ClassParser(object):
         children = []
         tbody = SoupStrainer('tbody')
         soup = BeautifulSoup(data, parseOnlyThese=tbody)
-        print len(soup.findAll('tr'))
         for tr in soup.findAll('tr'):
             try:
                 code, name, credit, schedule, stats, remarks = tr.findAll('td')
@@ -141,8 +140,14 @@ class ClassParser(object):
                 pass
     
             elif kls.name.lower() != self.course_num:
+                subj = kls.name.lower()
+                print subj[:subj.rfind(' ')]
                 if self.course_num != 'comm 3':
                     continue
+                elif subj[:subj.rfind(' ')] == self.course_num:
+                    pass
+                    #print subj                           
+                
             # credit
             kls.credit = float(credit.contents[0].strip())
             # schedule

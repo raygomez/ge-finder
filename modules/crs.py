@@ -140,8 +140,13 @@ class ClassParser(object):
                 pass
     
             elif kls.name.lower() != self.course_num:
+                subj = kls.name.lower()
+                print subj[:subj.rfind(' ')]
                 if self.course_num != 'comm 3':
                     continue
+                elif subj[:subj.rfind(' ')] != self.course_num:
+                    continue
+                
             # credit
             kls.credit = float(credit.contents[0].strip())
             # schedule

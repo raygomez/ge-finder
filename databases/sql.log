@@ -42,3 +42,12 @@ CREATE TABLE auth_event(
     description TEXT
 );
 success!
+timestamp: 2011-06-14T13:12:16.038267
+CREATE TABLE auth_cas(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER REFERENCES auth_user(id) ON DELETE CASCADE,
+    created_on TIMESTAMP,
+    url CHAR(512),
+    uuid CHAR(512)
+);
+success!
